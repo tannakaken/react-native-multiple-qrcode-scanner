@@ -1,12 +1,34 @@
 import * as React from 'react';
 
 import { StyleSheet, View } from 'react-native';
-import MultipleQrcodeScannerViewManager from 'react-native-multiple-qrcode-scanner';
+import MultipleQRCodeScannerView, {
+  requestCameraPermission,
+} from 'react-native-multiple-qrcode-scanner';
+import { useEffect } from 'react';
 
 export default function App() {
+  useEffect(() => {
+    requestCameraPermission();
+  }, []);
   return (
     <View style={styles.container}>
-      <MultipleQrcodeScannerViewManager color="#32a852" style={styles.box} />
+      <MultipleQRCodeScannerView
+        onQRCodeTouch={(code) => {
+          console.warn(code);
+        }}
+        colorMap={{
+          '^30.*': '#00FF00',
+        }}
+        labeledOnlyPatternMatched={false}
+        labelMap={{
+          '^.*$': 'hello',
+        }}
+        labelColorMap={{
+          '30.*$': '#000000',
+        }}
+        labelDirection="bottom"
+        style={styles.box}
+      />
     </View>
   );
 }
@@ -18,8 +40,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
+    width: '100%',
+    height: '100%',
   },
 });

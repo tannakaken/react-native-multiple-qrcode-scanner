@@ -1,7 +1,7 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
   def kotlin_version = rootProject.ext.has('kotlinVersion') ? rootProject.ext.get('kotlinVersion') : project.properties['MultipleQrcodeScanner_kotlinVersion']
-
+  ext.camerax_version = '1.0.0-rc03'
   repositories {
     google()
     jcenter()
@@ -29,13 +29,13 @@ android {
   compileSdkVersion getExtOrIntegerDefault('compileSdkVersion')
   buildToolsVersion getExtOrDefault('buildToolsVersion')
   defaultConfig {
-    minSdkVersion 16
+    minSdkVersion 26
     targetSdkVersion getExtOrIntegerDefault('targetSdkVersion')
     versionCode 1
     versionName "1.0"
-    
+
   }
-  
+
   buildTypes {
     release {
       minifyEnabled false
@@ -127,4 +127,12 @@ dependencies {
   // noinspection GradleDynamicVersion
   api 'com.facebook.react:react-native:+'
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  // camera
+  implementation "androidx.camera:camera-core:$camerax_version"
+  implementation "androidx.camera:camera-camera2:$camerax_version"
+  implementation "androidx.camera:camera-lifecycle:$camerax_version"
+  implementation 'androidx.camera:camera-view:1.0.0-alpha22'
+
+  implementation 'com.google.mlkit:barcode-scanning:16.1.1'
 }
