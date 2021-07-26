@@ -176,7 +176,8 @@
     [rects addObject:value];
     NSString *code = metadataObject.stringValue;
     if (!code) {
-      return;
+        [codes addObject:@""];
+        return;
     }
     if (overlayView.colorMapForAlreadyRead != nil) {
       NSDate *timestamp = codesNowReading[code];
