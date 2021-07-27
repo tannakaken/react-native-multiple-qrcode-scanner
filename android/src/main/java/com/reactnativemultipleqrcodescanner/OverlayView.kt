@@ -51,7 +51,7 @@ class OverlayView : View {
     private fun setLabel(code: String) {
         labelMap?.also {
             it.entryIterator.forEach { entry ->
-                val pattern = entry.key.toRegex()
+                val pattern = entry.key.toRegex(option = RegexOption.DOT_MATCHES_ALL)
                 if (pattern.containsMatchIn(code)) {
                     label = entry.value.toString()
                 }
@@ -87,7 +87,7 @@ class OverlayView : View {
         return run loop@ {
             colorMap?.also {
                 it.entryIterator.forEach { entry ->
-                    val pattern = entry.key.toRegex()
+                    val pattern = entry.key.toRegex(option = RegexOption.DOT_MATCHES_ALL)
                     if (pattern.containsMatchIn(code)) {
                         barcodesNowReading[code] = LocalDateTime.now()
                         if (labeledOnlyPatternMatched) {
@@ -108,7 +108,7 @@ class OverlayView : View {
         return run loop@ {
             colorMapForAlreadyRead?.also {
                 it.entryIterator.forEach { entry ->
-                    val pattern = entry.key.toRegex()
+                    val pattern = entry.key.toRegex(option = RegexOption.DOT_MATCHES_ALL)
                     if (pattern.containsMatchIn(code)) {
                         if (labeledOnlyPatternMatched) {
                             setLabelWithPattern(entry.key)
@@ -160,7 +160,7 @@ class OverlayView : View {
                             labelColorMap?.also {
                                 it.entryIterator.forEach inner@{ entry ->
                                     Log.d("color", entry.key + ":" + code)
-                                    val pattern = entry.key.toRegex()
+                                    val pattern = entry.key.toRegex(option = RegexOption.DOT_MATCHES_ALL)
                                     if (pattern.containsMatchIn(code)) {
                                         setPaintColor(Color.parseColor(entry.value.toString()), paint, actualLabelAlpha)
 

@@ -166,43 +166,43 @@
   NSDate *now = [NSDate new];
   NSDate *oneSecondAgo = [NSDate dateWithTimeIntervalSinceNow:-1];
   [metadataObjects enumerateObjectsUsingBlock:^(AVMetadataObject *object, NSUInteger idx, BOOL *stop) {
-    if (![object isKindOfClass:AVMetadataMachineReadableCodeObject.class]) {
-      return;
-    }
-    AVMetadataMachineReadableCodeObject *metadataObject = (AVMetadataMachineReadableCodeObject *)object;
-    if (![metadataObject.type isEqualToString:AVMetadataObjectTypeQRCode]) {
-      return;
-    }
-    AVMetadataObject *qrcodeObject = [videoPreviewLayer transformedMetadataObjectForMetadataObject:metadataObject];
-    CGRect bounds = qrcodeObject.bounds;
-    NSValue *value = [NSValue valueWithCGRect:bounds];
-    [rects addObject:value];
-    NSString *code = metadataObject.stringValue;
-    if (!code) {
-        [codes addObject:@""];
-        return;
-    }
-    if (overlayView.colorMapForAlreadyRead != nil) {
-      NSDate *timestamp = codesNowReading[code];
-      if (timestamp) {
-        if ([timestamp compare:oneSecondAgo] == NSOrderedAscending) { // timestampが1秒よりも前
-          [overlayView.codesAlreadyRead addObject:code];
-          [codesNowReading removeObjectForKey:code];
-        } else {
-          codesNowReading[code] = now;
-        }
-      } else {
-        codesNowReading[code] = now;
+      if (![object isKindOfClass:AVMetadataMachineReadableCodeObject.class]) {
+          return;
       }
-    }
-    if (self.onQRCodeRead) {
-      self.onQRCodeRead(@{@"code": code});
-    }
-    [codes addObject:code];
-  }];
-  overlayView.rects = rects;
-  overlayView.codes = codes;
-  [overlayView setNeedsDisplay];
+      AVMetadataMachineReadableCodeObject *metadataObject = (AVMetadataMachineReadableCodeObject *)object;
+      if (![metadataObject.type isEqualToString:AVMetadataObjectTypeQRCode]) {
+          return;
+      }
+      AVMetadataObject *qrcodeObject = [videoPreviewLayer transformedMetadataObjectForMetadataObject:metadataObject];
+      CGRect bounds = qrcodeObject.bounds;
+      NSValue *value = [NSValue valueWithCGRect:bounds];
+      [rects addObject:value];
+      NSString *code = metadataObject.stringValue;
+      if (!code) {
+          [codes addObject:@""];
+          return;
+      }
+      if (overlayView.colorMapForAlreadyRead != nil) {
+          NSDate *timestamp = codesNowReading[code];
+          if (timestamp) {
+              if ([timestamp compare:oneSecondAgo] == NSOrderedAscending) { // timestampが1秒よりも前
+                  [overlayView.codesAlreadyRead addObject:code];
+                  [codesNowReading removeObjectForKey:code];
+              } else {
+                  codesNowReading[code] = now;
+              }
+          } else {
+              codesNowReading[code] = now;
+          }
+      }
+      if (self.onQRCodeRead) {
+          self.onQRCodeRead(@{@"code": code});
+      }
+      [codes addObject:code];
+    }];
+    overlayView.rects = rects;
+    overlayView.codes = codes;
+    [overlayView setNeedsDisplay];
 }
 
 // React Nativeからプロパティを設定した時点でoverlayViewがまだセットされていないことがある。

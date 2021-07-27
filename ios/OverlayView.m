@@ -67,7 +67,7 @@
     UIBezierPath *rectangle = [UIBezierPath bezierPathWithRect:rect];
     [colorMap enumerateKeysAndObjectsUsingBlock:^(NSString * pattern, NSString *colorCode, BOOL *stop) {
         NSError *error = nil;
-        NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:&error];
+        NSRegularExpression *regexp = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionDotMatchesLineSeparators error:&error];
         if (error == nil) {
             NSArray *matches = [regexp matchesInString:code options:0 range:NSMakeRange(0, code.length)];
             if (matches.count > 0) {
@@ -82,8 +82,10 @@
                     if (self.labelColor != nil) {
                         color = [self colorFromHexString:self.labelColor withAlpha:actualLabelAlpha];
                     } else if (self.labelColorMap) {
-                        NSString *colorCode = [self getValueOfCode:code fromPatternDictionary:self.labelColorMap];
-                        if (colorCode) {
+                        NSString *labelColorCode = [self getValueOfCode:code fromPatternDictionary:self.labelColorMap];
+                        if (labelColorCode) {
+                            color = [self colorFromHexString:labelColorCode withAlpha:actualLabelAlpha];
+                        } else {
                             color = [self colorFromHexString:colorCode withAlpha:actualLabelAlpha];
                         }
                     }
