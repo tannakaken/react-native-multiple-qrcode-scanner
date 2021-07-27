@@ -10,6 +10,7 @@ import androidx.annotation.ColorInt
 import com.facebook.react.bridge.ReadableMap
 import com.google.mlkit.vision.barcode.Barcode
 import com.reactnativemultipleqrcodescanner.ScanResult
+import java.nio.charset.Charset
 import java.time.LocalDateTime
 
 class OverlayView : View {
@@ -27,9 +28,11 @@ class OverlayView : View {
     var labelColor: String? = null
     var labelColorMap: ReadableMap? = null
     var labeledOnlyPatternMatched = true
+    var charset: String? = null
     var barcodes = listOf<Barcode>()
     var barcodesNowReading = mutableMapOf<String, LocalDateTime>()
     var barcodesAlreadyRead = mutableSetOf<String>()
+
     private var scaleFactorX = 1.0f
     private var scaleFactorY = 1.0f
     private var paint = Paint()
@@ -149,7 +152,12 @@ class OverlayView : View {
         canvas?.also {c ->
             barcodes.forEach {barcode ->
                 barcode.boundingBox?.let { boundingBox ->
-                    barcode.rawValue?.let {code ->
+                  val rawString = if (charset == null) {
+                    barcode.rawValue
+                  } else {
+                    barcode.rawBytes?.toString(Charset.forName(charset))
+                  }
+                  rawString?.let {code ->
                         translateRect(boundingBox, rectF)
                         setPaintStyle(code, paint)
                         c.drawRect(rectF, paint)

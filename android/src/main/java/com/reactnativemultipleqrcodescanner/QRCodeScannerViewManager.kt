@@ -22,6 +22,7 @@ import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.uimanager.events.RCTEventEmitter
+import java.nio.charset.Charset
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -62,7 +63,12 @@ class QRCodeScannerViewManager() : SimpleViewManager<QRCodeScannerView>() {
                                 overlayView.update(scanResult)
                                 scanResult.barcodes.forEach { barcode ->
                                     val event: WritableMap = Arguments.createMap()
-                                    event.putString("code", barcode.rawValue)
+                                    val rawString = if (overlayView.charset == null) {
+                                        barcode.rawValue
+                                    } else {
+                                        barcode.rawBytes?.toString(Charset.forName(overlayView.charset))
+                                    }
+                                    event.putString("code", rawString)
                                     val reactContext = qrCodeScannerView.context as ReactContext
                                     reactContext.getJSModule(RCTEventEmitter::class.java)
                                         .receiveEvent(
@@ -105,7 +111,12 @@ class QRCodeScannerViewManager() : SimpleViewManager<QRCodeScannerView>() {
                     MotionEvent.ACTION_DOWN -> {
                       overlayView.barcodes.forEach { barcode ->
                         barcode.boundingBox?.let { boundingBox ->
-                          barcode.rawValue?.let { code ->
+                          val rawString = if (overlayView.charset == null) {
+                            barcode.rawValue
+                          } else {
+                            barcode.rawBytes?.toString(Charset.forName(overlayView.charset))
+                          }
+                          rawString?.let { code ->
                             if (overlayView.inRect(motionEvent.x, motionEvent.y, boundingBox)) {
                               val event: WritableMap = Arguments.createMap()
                               event.putString("code", code)
@@ -166,7 +177,12 @@ class QRCodeScannerViewManager() : SimpleViewManager<QRCodeScannerView>() {
                 .put("onQRCodeTouch", MapBuilder.of("registrationName", "onQRCodeTouch"))
                 .build()
     }
-
+    @ReactProp(name = "charset")
+    fun setCharset(view: QRCodeScannerView, charset: String?) {
+        view.overlayView?.also {
+            it.charset = charset
+        }
+    }
     @ReactProp(name = "colorMap")
     fun setColorMap(view: QRCodeScannerView, colorMap: ReadableMap?) {
         view.overlayView?.also {

@@ -11,6 +11,8 @@ import {
 
 type LabelDirection = 'right' | 'bottom';
 
+type Charset = 'SJIS';
+
 const AndroidQRCodeScannerView = requireNativeComponent<{
   style?: ViewStyle;
   onQRCodeRead: (event: NativeSyntheticEvent<any>) => void;
@@ -25,6 +27,7 @@ const AndroidQRCodeScannerView = requireNativeComponent<{
   alpha?: number;
   labelAlpha?: number;
   labelFontSize?: number; // ポイント数
+  charset?: Charset;
 }>('QRCodeScannerView');
 
 const IOSQRCodeScannerView = requireNativeComponent<{
@@ -41,6 +44,7 @@ const IOSQRCodeScannerView = requireNativeComponent<{
   labelColor?: string;
   labelColorMap?: { [pattern: string]: string };
   labelDirection: LabelDirection;
+  charset?: Charset;
   // IOSはアプリがバックグラウンドからフォアグアウンドになった時にカメラが止まる
   // このreloadKeyを変化させるとカメラが再起動する。
   // Androidにはこの仕組みは必要ない。
@@ -61,6 +65,7 @@ type MultipleQRCodeScannerViewProps = {
   labelFontSize?: number;
   alpha?: number;
   labelAlpha?: number;
+  charset?: Charset;
 };
 
 /**
@@ -134,6 +139,7 @@ const MultipleQRCodeScannerView: FC<MultipleQRCodeScannerViewProps> = (
         overlayAlpha={props.alpha}
         labelAlpha={props.labelAlpha}
         labelFontSize={props.labelFontSize}
+        charset={props.charset}
       />
     );
   }
@@ -152,6 +158,7 @@ const MultipleQRCodeScannerView: FC<MultipleQRCodeScannerViewProps> = (
       alpha={props.alpha}
       labelAlpha={props.labelAlpha}
       labelFontSize={props.labelFontSize}
+      charset={props.charset}
     />
   );
 };

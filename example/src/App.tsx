@@ -22,15 +22,13 @@ export default function App() {
           '^.{6}(,.*)?$': '#00FF00',
         }}
         labeledOnlyPatternMatched={false}
-        labelMap={{
-          '^.*$': 'hello',
-        }}
         labelColorMap={{
           '^30.*$': '#000000',
         }}
         labelAlpha={255}
         labelDirection="bottom"
         style={styles.box}
+        charset="SJIS"
       />
     </View>
   );
