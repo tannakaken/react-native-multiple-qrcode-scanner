@@ -17,6 +17,7 @@ RCT_EXPORT_MODULE(LXQRCodeScannerView)
 RCT_EXPORT_VIEW_PROPERTY(onQRCodeRead, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onQRCodeTouch, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(alpha, NSInteger)
+RCT_EXPORT_VIEW_PROPERTY(labelAlpha, NSInteger)
 RCT_EXPORT_VIEW_PROPERTY(reloadKey, NSInteger)
 RCT_CUSTOM_VIEW_PROPERTY(colorMap, NSDictionary, QRCodeScannerView) {
   [view setColorMap:json];

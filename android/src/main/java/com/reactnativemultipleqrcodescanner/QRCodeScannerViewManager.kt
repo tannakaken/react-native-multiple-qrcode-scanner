@@ -203,6 +203,15 @@ class QRCodeScannerViewManager() : SimpleViewManager<QRCodeScannerView>() {
         }
     }
 
+    @ReactProp(name = "labelAlpha")
+    fun setAlpha(view: QRCodeScannerView, labelAlpha: Int?) {
+        view.overlayView?.also {
+        if (labelAlpha != null) {
+            it.labelAlpha = labelAlpha
+        }
+      }
+    }
+
     @ReactProp(name = "labelFontSize")
     fun setLabelFontSize(view: QRCodeScannerView, labelFontSize: Int?) {
         view.overlayView?.also {

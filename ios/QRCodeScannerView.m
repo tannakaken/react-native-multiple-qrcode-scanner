@@ -10,24 +10,25 @@
 
 
 @implementation QRCodeScannerView {
-  AVCaptureSession *captureSession;
-  AVCaptureVideoPreviewLayer *videoPreviewLayer;
-  OverlayView *overlayView;
-  NSInteger  reloadKey_;
-  NSMutableDictionary<NSString *, NSDate *> *codesNowReading;
-  // React Nativeからプロパティを設定した時点でoverlayViewがまだセットされていないことがある。
-  // なので一度QRCodeScannerViewで持って、それをoverlayView生成時点でoverlayViewに設定する。
-  NSInteger overlayAlpha_;
-  NSDictionary<NSString *, NSString *> *colorMap_;
-  NSDictionary<NSString *, NSString *> *colorMapForAlreadyRead_;
-  NSDictionary<NSString *, NSString *> *labelMap_;
-  NSInteger labelFontSize_;
+    AVCaptureSession *captureSession;
+    AVCaptureVideoPreviewLayer *videoPreviewLayer;
+    OverlayView *overlayView;
+    NSInteger  reloadKey_;
+    NSMutableDictionary<NSString *, NSDate *> *codesNowReading;
+    // React Nativeからプロパティを設定した時点でoverlayViewがまだセットされていないことがある。
+    // なので一度QRCodeScannerViewで持って、それをoverlayView生成時点でoverlayViewに設定する。
+    NSInteger overlayAlpha_;
+    NSInteger labelAlpha_;
+    NSDictionary<NSString *, NSString *> *colorMap_;
+    NSDictionary<NSString *, NSString *> *colorMapForAlreadyRead_;
+    NSDictionary<NSString *, NSString *> *labelMap_;
+    NSInteger labelFontSize_;
     BOOL labeledOnlyPatternMatched_;
     NSString *labelColor_;
     NSDictionary<NSString *, NSString *> *labelColorMap_;
     NSString *labelDirection_;
-  NSMutableArray<NSValue *> *rects;
-  NSMutableArray<NSString *> *codes;
+    NSMutableArray<NSValue *> *rects;
+    NSMutableArray<NSString *> *codes;
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -47,22 +48,23 @@
 }
 
 - (void)prepare {
-  reloadKey_ = 0;
-  codesNowReading = [NSMutableDictionary new];
-  overlayAlpha_ = 100;
-  colorMap_ = [NSDictionary new];
-  colorMapForAlreadyRead_ = nil;
-  labelMap_ = [NSDictionary new];
-  labelFontSize_ = 40;
+    reloadKey_ = 0;
+    codesNowReading = [NSMutableDictionary new];
+    overlayAlpha_ = 100;
+    labelAlpha_ = -1;
+    colorMap_ = [NSDictionary new];
+    colorMapForAlreadyRead_ = nil;
+    labelMap_ = [NSDictionary new];
+    labelFontSize_ = 40;
     labeledOnlyPatternMatched_ = NO;
     labelColor_ = nil;
     labelColorMap_ = nil;
     labelDirection_ = @"right";
-  rects = [NSMutableArray new];
-  codes = [NSMutableArray new];
+    rects = [NSMutableArray new];
+    codes = [NSMutableArray new];
   
-  UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
-  [self addGestureRecognizer:tapGestureRecognizer];
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
+    [self addGestureRecognizer:tapGestureRecognizer];
 }
 
 - (void)tap:(UITapGestureRecognizer *)tapGestureRecognizer {
@@ -121,20 +123,21 @@
   }
   overlayView = [[OverlayView alloc] initWithFrame:self.bounds];
   if (overlayView) {
-    [overlayView setOpaque:NO];
-    //React Nativeからプロパティを設定した時点でoverlayViewがまだセットされていないことがある。
-    // なので一度QRCodeScannerViewで持って、それをoverlayView生成時点でoverlayViewに設定する。
-    overlayView.overlayAlpha = overlayAlpha_;
-    overlayView.colorMap = colorMap_;
-    overlayView.colorMapForAlreadyRead = colorMapForAlreadyRead_;
-    overlayView.labelMap = labelMap_;
-    overlayView.labelFontSize = labelFontSize_;
+      [overlayView setOpaque:NO];
+      //React Nativeからプロパティを設定した時点でoverlayViewがまだセットされていないことがある。
+      // なので一度QRCodeScannerViewで持って、それをoverlayView生成時点でoverlayViewに設定する。
+      overlayView.overlayAlpha = overlayAlpha_;
+      overlayView.labelAlpha = labelAlpha_;
+      overlayView.colorMap = colorMap_;
+      overlayView.colorMapForAlreadyRead = colorMapForAlreadyRead_;
+      overlayView.labelMap = labelMap_;
+      overlayView.labelFontSize = labelFontSize_;
       overlayView.labeledOnlyPatternMatched = labeledOnlyPatternMatched_;
       overlayView.labelColor = labelColor_;
       overlayView.labelColorMap = labelColorMap_;
       overlayView.labelDirection = labelDirection_;
-    [self addSubview:overlayView];
-    [self bringSubviewToFront:overlayView];
+      [self addSubview:overlayView];
+      [self bringSubviewToFront:overlayView];
   }
   if (captureSession) {
     [captureSession startRunning];
@@ -213,6 +216,17 @@
 
 - (NSInteger)overlayAlpha {
   return overlayAlpha_;
+}
+
+- (void)setLabelAlpha:(NSInteger)labelAlpha {
+  labelAlpha_ = labelAlpha;
+  if (overlayView) {
+    overlayView.labelAlpha = labelAlpha;
+  }
+}
+
+- (NSInteger)labelAlpha {
+  return labelAlpha_;
 }
 
 - (void)setColorMap:(NSDictionary *)colorMap {

@@ -13,6 +13,7 @@
 @property (nonnull, nonatomic, strong) NSArray<NSString *> *codes;
 @property (nonnull, nonatomic, strong) NSMutableSet<NSString *> *codesAlreadyRead;
 @property NSInteger overlayAlpha;
+@property NSInteger labelAlpha;
 @property (nonnull, nonatomic, strong) NSDictionary<NSString *, NSString *> *colorMap;
 @property (nullable, nonatomic, strong) NSDictionary<NSString *, NSString *> *colorMapForAlreadyRead;
 @property (nullable, nonatomic, strong) NSDictionary<NSString *, NSString *> *labelMap;

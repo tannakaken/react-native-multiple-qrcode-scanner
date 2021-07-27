@@ -23,6 +23,7 @@ const AndroidQRCodeScannerView = requireNativeComponent<{
   labelColorMap?: { [pattern: string]: string };
   labelDirection: LabelDirection;
   alpha?: number;
+  labelAlpha?: number;
   labelFontSize?: number; // ポイント数
 }>('QRCodeScannerView');
 
@@ -34,6 +35,7 @@ const IOSQRCodeScannerView = requireNativeComponent<{
   colorMapForAlreadyRead?: { [pattern: string]: string };
   labelMap?: { [pattern: string]: string };
   overlayAlpha?: number;
+  labelAlpha?: number;
   labelFontSize?: number;
   labeledOnlyPatternMatched: boolean;
   labelColor?: string;
@@ -58,6 +60,7 @@ type MultipleQRCodeScannerViewProps = {
   labelDirection?: LabelDirection;
   labelFontSize?: number;
   alpha?: number;
+  labelAlpha?: number;
 };
 
 /**
@@ -129,6 +132,7 @@ const MultipleQRCodeScannerView: FC<MultipleQRCodeScannerViewProps> = (
         labelColorMap={props.labelColorMap}
         labelDirection={props.labelDirection || 'right'}
         overlayAlpha={props.alpha}
+        labelAlpha={props.labelAlpha}
         labelFontSize={props.labelFontSize}
       />
     );
@@ -146,6 +150,7 @@ const MultipleQRCodeScannerView: FC<MultipleQRCodeScannerViewProps> = (
       labelColorMap={props.labelColorMap}
       labelDirection={props.labelDirection || 'right'}
       alpha={props.alpha}
+      labelAlpha={props.labelAlpha}
       labelFontSize={props.labelFontSize}
     />
   );

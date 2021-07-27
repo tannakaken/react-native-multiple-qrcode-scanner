@@ -20,6 +20,7 @@ class OverlayView : View {
     var colorMapForAlreadyRead: ReadableMap? = null
     var labelMap: ReadableMap? = null
     var overlayAlpha = 100
+    var labelAlpha = 100
     var labelFontSize = 40
     var labelDirection = "left"
     var labelColor: String? = null
@@ -48,15 +49,13 @@ class OverlayView : View {
         } else {
             labelMap?.also {
                 it.entryIterator.forEach { entry ->
-                  val pattern = entry.key.toRegex()
-                  if (pattern.matches(code)) {
-                      label = entry.value.toString()
-                      return
-                  }
+                    val pattern = entry.key.toRegex()
+                    if (pattern.matches(code)) {
+                        label = entry.value.toString()
+                    }
                 }
             }
         }
-
     }
 
     private fun setPaintStyle(code: String, paint: Paint) {
@@ -80,7 +79,7 @@ class OverlayView : View {
         } else {
           setLabel("", code)
         }
-        setPaintColor(Color.RED, paint)
+        setPaintColor(Color.RED, paint, overlayAlpha)
     }
 
     private fun setPaintStyleWithColorMap(code: String, paint: Paint): Boolean {
@@ -91,7 +90,7 @@ class OverlayView : View {
                     if (pattern.matches(code)) {
                         barcodesNowReading[code] = LocalDateTime.now()
                         setLabel(entry.key, code)
-                        setPaintColor(Color.parseColor(entry.value.toString()), paint)
+                        setPaintColor(Color.parseColor(entry.value.toString()), paint, overlayAlpha)
                         return@loop true
                     }
                 }
@@ -107,7 +106,7 @@ class OverlayView : View {
                     val pattern = entry.key.toRegex()
                     if (pattern.matches(code)) {
                         setLabel(entry.key, code)
-                        setPaintColor(Color.parseColor(entry.value.toString()), paint)
+                        setPaintColor(Color.parseColor(entry.value.toString()), paint, overlayAlpha)
                         return@loop true
                     }
                 }
@@ -120,10 +119,10 @@ class OverlayView : View {
         }
     }
 
-    private fun setPaintColor(@ColorInt color: Int, paint: Paint) {
+    private fun setPaintColor(@ColorInt color: Int, paint: Paint, alpha: Int) {
         paint.apply {
             this.color = color
-            alpha = overlayAlpha
+            this.alpha = alpha
             strokeWidth = 5F
             style = Paint.Style.FILL
             textSize = labelFontSizePixel()
@@ -137,6 +136,7 @@ class OverlayView : View {
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
+        val actualLabelAlpha = if(labelAlpha > 0)  labelAlpha else overlayAlpha
         canvas?.also {c ->
             barcodes.forEach {barcode ->
                 barcode.boundingBox?.let { boundingBox ->
@@ -145,13 +145,13 @@ class OverlayView : View {
                         setPaintStyle(code, paint)
                         c.drawRect(rectF, paint)
                         if (labelColor != null) {
-                            setPaintColor(Color.parseColor(labelColor), paint)
+                            setPaintColor(Color.parseColor(labelColor), paint, actualLabelAlpha)
                         } else {
                             labelColorMap?.also {
                                 it.entryIterator.forEach { entry ->
                                     val pattern = entry.key.toRegex()
                                     if (pattern.matches(code)) {
-                                        setPaintColor(Color.parseColor(entry.value.toString()), paint)
+                                        setPaintColor(Color.parseColor(entry.value.toString()), paint, actualLabelAlpha)
                                         return@forEach
                                     }
                                 }

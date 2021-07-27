@@ -18,6 +18,8 @@
 @property (nonnull, nonatomic, strong) RCTBubblingEventBlock onQRCodeTouch;
 - (void)setOverlayAlpha:(NSInteger)overlayAlpha;
 - (NSInteger)overlayAlpha;
+- (void)setLabelAlpha:(NSInteger)labelAlpha;
+- (NSInteger)labelAlpha;
 - (void)setColorMap:(NSDictionary * _Nonnull)colorMap;
 - (NSDictionary * _Nonnull)colorMap;
 - (void)setColorMapForAlreadyRead:(NSDictionary * _Nullable)colorMapForAlreadyRead;

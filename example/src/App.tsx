@@ -26,6 +26,7 @@ export default function App() {
         labelColorMap={{
           '30.*$': '#000000',
         }}
+        labelAlpha={255}
         labelDirection="bottom"
         style={styles.box}
       />
