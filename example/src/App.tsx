@@ -24,7 +24,7 @@ export default function App() {
           '^.*$': 'hello',
         }}
         labelColorMap={{
-          '30.*$': '#000000',
+          '^30.*$': '#000000',
         }}
         labelAlpha={255}
         labelDirection="bottom"

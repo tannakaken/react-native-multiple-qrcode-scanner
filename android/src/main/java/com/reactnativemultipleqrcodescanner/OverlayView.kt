@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.annotation.ColorInt
 import com.facebook.react.bridge.ReadableMap
@@ -51,7 +52,7 @@ class OverlayView : View {
         labelMap?.also {
             it.entryIterator.forEach { entry ->
                 val pattern = entry.key.toRegex()
-                if (pattern.matches(code)) {
+                if (pattern.containsMatchIn(code)) {
                     label = entry.value.toString()
                 }
             }
@@ -87,7 +88,7 @@ class OverlayView : View {
             colorMap?.also {
                 it.entryIterator.forEach { entry ->
                     val pattern = entry.key.toRegex()
-                    if (pattern.matches(code)) {
+                    if (pattern.containsMatchIn(code)) {
                         barcodesNowReading[code] = LocalDateTime.now()
                         if (labeledOnlyPatternMatched) {
                             setLabelWithPattern(entry.key)
@@ -108,7 +109,7 @@ class OverlayView : View {
             colorMapForAlreadyRead?.also {
                 it.entryIterator.forEach { entry ->
                     val pattern = entry.key.toRegex()
-                    if (pattern.matches(code)) {
+                    if (pattern.containsMatchIn(code)) {
                         if (labeledOnlyPatternMatched) {
                             setLabelWithPattern(entry.key)
                         } else {
@@ -155,16 +156,22 @@ class OverlayView : View {
                         if (labelColor != null) {
                             setPaintColor(Color.parseColor(labelColor), paint, actualLabelAlpha)
                         } else {
+                            var found = false
                             labelColorMap?.also {
                                 it.entryIterator.forEach inner@{ entry ->
+                                    Log.d("color", entry.key + ":" + code)
                                     val pattern = entry.key.toRegex()
-                                    if (pattern.matches(code)) {
+                                    if (pattern.containsMatchIn(code)) {
                                         setPaintColor(Color.parseColor(entry.value.toString()), paint, actualLabelAlpha)
+
+                                        found = true
                                         return@inner
                                     }
                                 }
                             }
-                            setPaintColor(paint.color, paint, actualLabelAlpha)
+                            if (!found) {
+                                setPaintColor(paint.color, paint, actualLabelAlpha)
+                            }
                         }
                         if (labelDirection == "right") {
                             c.drawText(label, rectF.right, rectF.top + labelFontSizePixel(), paint)

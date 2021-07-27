@@ -104,8 +104,11 @@
                 return;
             }
             NSString *colorCode = [self getValueOfCode:code fromPatternDictionary:self.labelColorMap];
+            NSLog(@"%@:%@", code, colorCode);
             if (colorCode) {
                 color = [self colorFromHexString:colorCode withAlpha:actualLabelAlpha];
+            } else {
+                color = [UIColor colorWithRed:1.0 green:0 blue:0 alpha:(CGFloat)actualLabelAlpha/(255.0)];
             }
             [self drawLabel:label ByRect:rect withColor:color];
         }
