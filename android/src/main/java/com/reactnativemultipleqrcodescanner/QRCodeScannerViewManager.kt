@@ -22,7 +22,6 @@ import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.uimanager.events.RCTEventEmitter
-import com.lixil_qr_code_android.OverlayView
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -100,42 +99,42 @@ class QRCodeScannerViewManager() : SimpleViewManager<QRCodeScannerView>() {
                         Log.d("ERROR", "cannot access camera", e)
                     }
                 }
-                previewView.setOnTouchListener (View.OnTouchListener { view: View, motionEvent: MotionEvent ->
-                    when (motionEvent.action) {
-                        // touch qrcode
-                        MotionEvent.ACTION_DOWN -> {
-                            overlayView.barcodes.forEach { barcode ->
-                                barcode.boundingBox?.let { boundingBox ->
-                                    barcode.rawValue?.let { code ->
-                                        if (overlayView.inRect(motionEvent.x, motionEvent.y, boundingBox)) {
-                                            val event: WritableMap = Arguments.createMap()
-                                            event.putString("code", code)
-                                            val reactContext = qrCodeScannerView.context as ReactContext
-                                            reactContext.getJSModule(RCTEventEmitter::class.java)
-                                                .receiveEvent(
-                                                    qrCodeScannerView.getId(),
-                                                    "onQRCodeTouch",
-                                                    event
-                                                )
-                                        }
-                                    }
-                                }
+                previewView.setOnTouchListener { view: View, motionEvent: MotionEvent ->
+                  when (motionEvent.action) {
+                    // touch qrcode
+                    MotionEvent.ACTION_DOWN -> {
+                      overlayView.barcodes.forEach { barcode ->
+                        barcode.boundingBox?.let { boundingBox ->
+                          barcode.rawValue?.let { code ->
+                            if (overlayView.inRect(motionEvent.x, motionEvent.y, boundingBox)) {
+                              val event: WritableMap = Arguments.createMap()
+                              event.putString("code", code)
+                              val reactContext = qrCodeScannerView.context as ReactContext
+                              reactContext.getJSModule(RCTEventEmitter::class.java)
+                                .receiveEvent(
+                                  qrCodeScannerView.getId(),
+                                  "onQRCodeTouch",
+                                  event
+                                )
                             }
+                          }
+                        }
+                      }
 
-                            true
-                        }
-                        // touch focus
-                        MotionEvent.ACTION_UP -> {
-                            view.performClick()
-                            val factory = previewView.getMeteringPointFactory()
-                            val point = factory.createPoint(motionEvent.x, motionEvent.y)
-                            val action = FocusMeteringAction.Builder(point).build()
-                            camera.cameraControl.startFocusAndMetering(action)
-                            true
-                        }
-                        else -> false
+                      true
                     }
-                })
+                    // touch focus
+                    MotionEvent.ACTION_UP -> {
+                      view.performClick()
+                      val factory = previewView.getMeteringPointFactory()
+                      val point = factory.createPoint(motionEvent.x, motionEvent.y)
+                      val action = FocusMeteringAction.Builder(point).build()
+                      camera.cameraControl.startFocusAndMetering(action)
+                      true
+                    }
+                    else -> false
+                  }
+                }
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
@@ -172,7 +171,7 @@ class QRCodeScannerViewManager() : SimpleViewManager<QRCodeScannerView>() {
     fun setColorMap(view: QRCodeScannerView, colorMap: ReadableMap?) {
         view.overlayView?.also {
             it.colorMap = colorMap
-            it.barcodesAlreadyRead = mutableSetOf();
+            it.barcodesAlreadyRead = mutableSetOf()
             it.barcodesNowReading = mutableMapOf()
         }
     }
@@ -181,7 +180,7 @@ class QRCodeScannerViewManager() : SimpleViewManager<QRCodeScannerView>() {
     fun setColorMapForAlreadyRead(view: QRCodeScannerView, colorMapForAlreadyRead: ReadableMap?) {
         view.overlayView?.also {
             it.colorMapForAlreadyRead = colorMapForAlreadyRead
-            it.barcodesAlreadyRead = mutableSetOf();
+            it.barcodesAlreadyRead = mutableSetOf()
             it.barcodesNowReading = mutableMapOf()
         }
     }
@@ -204,7 +203,7 @@ class QRCodeScannerViewManager() : SimpleViewManager<QRCodeScannerView>() {
     }
 
     @ReactProp(name = "labelAlpha")
-    fun setAlpha(view: QRCodeScannerView, labelAlpha: Int?) {
+    fun setLabelAlpha(view: QRCodeScannerView, labelAlpha: Int?) {
         view.overlayView?.also {
         if (labelAlpha != null) {
             it.labelAlpha = labelAlpha

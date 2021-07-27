@@ -1,4 +1,4 @@
-package com.lixil_qr_code_android
+package com.reactnativemultipleqrcodescanner
 
 import android.content.Context
 import android.content.res.Configuration
@@ -41,18 +41,18 @@ class OverlayView : View {
     // dpiを取得してpointから実際のピクセルを計算
     private fun labelFontSizePixel() = labelFontSize.toFloat() / 72.0f * context.resources.displayMetrics.xdpi
 
-    private fun setLabel(pattern: String, code: String) {
-        if (labeledOnlyPatternMatched) {
-            labelMap?.let {
-                label = it.getString(pattern).orEmpty()
-            }
-        } else {
-            labelMap?.also {
-                it.entryIterator.forEach { entry ->
-                    val pattern = entry.key.toRegex()
-                    if (pattern.matches(code)) {
-                        label = entry.value.toString()
-                    }
+    private fun setLabelWithPattern(pattern: String) {
+        labelMap?.let {
+            label = it.getString(pattern).orEmpty()
+        }
+    }
+
+    private fun setLabel(code: String) {
+        labelMap?.also {
+            it.entryIterator.forEach { entry ->
+                val pattern = entry.key.toRegex()
+                if (pattern.matches(code)) {
+                    label = entry.value.toString()
                 }
             }
         }
@@ -77,7 +77,7 @@ class OverlayView : View {
         if (labeledOnlyPatternMatched) {
           label = ""
         } else {
-          setLabel("", code)
+          setLabel(code)
         }
         setPaintColor(Color.RED, paint, overlayAlpha)
     }
@@ -89,7 +89,11 @@ class OverlayView : View {
                     val pattern = entry.key.toRegex()
                     if (pattern.matches(code)) {
                         barcodesNowReading[code] = LocalDateTime.now()
-                        setLabel(entry.key, code)
+                        if (labeledOnlyPatternMatched) {
+                            setLabelWithPattern(entry.key)
+                        } else {
+                            setLabel(code)
+                        }
                         setPaintColor(Color.parseColor(entry.value.toString()), paint, overlayAlpha)
                         return@loop true
                     }
@@ -105,7 +109,11 @@ class OverlayView : View {
                 it.entryIterator.forEach { entry ->
                     val pattern = entry.key.toRegex()
                     if (pattern.matches(code)) {
-                        setLabel(entry.key, code)
+                        if (labeledOnlyPatternMatched) {
+                            setLabelWithPattern(entry.key)
+                        } else {
+                            setLabel(code)
+                        }
                         setPaintColor(Color.parseColor(entry.value.toString()), paint, overlayAlpha)
                         return@loop true
                     }
@@ -148,14 +156,15 @@ class OverlayView : View {
                             setPaintColor(Color.parseColor(labelColor), paint, actualLabelAlpha)
                         } else {
                             labelColorMap?.also {
-                                it.entryIterator.forEach { entry ->
+                                it.entryIterator.forEach inner@{ entry ->
                                     val pattern = entry.key.toRegex()
                                     if (pattern.matches(code)) {
                                         setPaintColor(Color.parseColor(entry.value.toString()), paint, actualLabelAlpha)
-                                        return@forEach
+                                        return@inner
                                     }
                                 }
                             }
+                            setPaintColor(paint.color, paint, actualLabelAlpha)
                         }
                         if (labelDirection == "right") {
                             c.drawText(label, rectF.right, rectF.top + labelFontSizePixel(), paint)
