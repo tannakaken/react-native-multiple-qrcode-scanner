@@ -14,8 +14,9 @@
 @class OverlayView;
 
 @interface QRCodeScannerView : UIView<AVCaptureMetadataOutputObjectsDelegate>
-@property (nonnull, nonatomic, strong) RCTBubblingEventBlock onQRCodeRead;
-@property (nonnull, nonatomic, strong) RCTBubblingEventBlock onQRCodeTouch;
+@property (nullable, nonatomic, strong) RCTBubblingEventBlock onQRCodeRead;
+@property (nullable, nonatomic, strong) RCTBubblingEventBlock onQRCodeTouch;
+@property (nullable, nonatomic, strong) NSString *charset;
 - (void)setOverlayAlpha:(NSInteger)overlayAlpha;
 - (NSInteger)overlayAlpha;
 - (void)setLabelAlpha:(NSInteger)labelAlpha;

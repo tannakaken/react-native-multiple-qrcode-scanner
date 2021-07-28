@@ -49,6 +49,7 @@
 
 - (void)prepare {
     reloadKey_ = 0;
+    self.charset = nil;
     codesNowReading = [NSMutableDictionary new];
     overlayAlpha_ = 100;
     labelAlpha_ = -1;
@@ -177,7 +178,10 @@
       CGRect bounds = qrcodeObject.bounds;
       NSValue *value = [NSValue valueWithCGRect:bounds];
       [rects addObject:value];
-      NSString *code = metadataObject.stringValue;
+      
+      CIQRCodeDescriptor *descriptor = metadataObject.descriptor;
+      NSData *rawData = [self decode:descriptor];
+      NSString *code = [[NSString alloc] initWithData:rawData encoding:[self currentCharset]];
       if (!code) {
           [codes addObject:@""];
           return;
@@ -203,6 +207,45 @@
     overlayView.rects = rects;
     overlayView.codes = codes;
     [overlayView setNeedsDisplay];
+}
+
+- (NSData *)decode:(CIQRCodeDescriptor *)descriptor {
+    NSUInteger len = descriptor.errorCorrectedPayload.length;
+    Byte *sourceData = (Byte*)malloc(len);
+    memcpy(sourceData, descriptor.errorCorrectedPayload.bytes, len);
+    Byte byte = 0x04;
+    Byte mode = sourceData[0] >> 4;
+    if (mode != byte) {
+        free(sourceData);
+        return nil;
+    }
+    NSInteger location;
+    NSInteger length;
+    NSInteger version = descriptor.symbolVersion;
+    if (1 <= version && version <= 9) {
+        location = 1;
+        NSUInteger a = (NSUInteger)(sourceData[0] & 0x0f) << 4;
+        NSUInteger b = (NSUInteger)(sourceData[1] & 0xf0) >> 4;
+        length = (NSInteger)(a | b);
+    } else if (10 <= version && 40 <= version) {
+        location = 2;
+        NSUInteger a = (NSUInteger)(sourceData[0] & 0x0f) << 12;
+        NSUInteger b = (NSUInteger)sourceData[1] << 4;
+        NSUInteger c = (NSUInteger)(sourceData[2] & 0xf0) >> 4;
+        length = (NSInteger)(a | b | c);
+    } else {
+        free(sourceData);
+        return nil;
+    }
+    Byte *targetData = (Byte*)malloc(length);
+    for (NSInteger i = 0; i < length; i++) {
+        NSInteger j = location + i;
+        targetData[i] = sourceData[j] << 4 | sourceData[j+1] >> 4;
+    }
+    NSData *data = [[NSData alloc] initWithBytes:targetData length:length];
+    free(sourceData);
+    free(targetData);
+    return data;
 }
 
 // React Nativeからプロパティを設定した時点でoverlayViewがまだセットされていないことがある。
@@ -318,6 +361,13 @@
 
 - (NSString *)labelDirection {
     return labelDirection_;
+}
+
+- (NSStringEncoding)currentCharset {
+    if ([self.charset isEqualToString:@"SJIS"]) {
+        return NSShiftJISStringEncoding;
+    }
+    return NSUTF8StringEncoding;
 }
 
 // Hack。カメラをリスタートさせたい場合はこのプロパティを変化させる。

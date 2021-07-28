@@ -564,6 +564,7 @@
 				DEVELOPMENT_TEAM = 6434J29SZ9;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MultipleQrcodeScannerExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -587,6 +588,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6434J29SZ9;
 				INFOPLIST_FILE = MultipleQrcodeScannerExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",

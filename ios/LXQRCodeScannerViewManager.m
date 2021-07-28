@@ -19,6 +19,7 @@ RCT_EXPORT_VIEW_PROPERTY(onQRCodeTouch, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(alpha, NSInteger)
 RCT_EXPORT_VIEW_PROPERTY(labelAlpha, NSInteger)
 RCT_EXPORT_VIEW_PROPERTY(reloadKey, NSInteger)
+RCT_EXPORT_VIEW_PROPERTY(charset, NSString)
 RCT_CUSTOM_VIEW_PROPERTY(colorMap, NSDictionary, QRCodeScannerView) {
   [view setColorMap:json];
 }
