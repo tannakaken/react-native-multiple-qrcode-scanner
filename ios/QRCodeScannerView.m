@@ -179,9 +179,19 @@
       NSValue *value = [NSValue valueWithCGRect:bounds];
       [rects addObject:value];
       
-      CIQRCodeDescriptor *descriptor = metadataObject.descriptor;
-      NSData *rawData = [self decode:descriptor];
-      NSString *code = [[NSString alloc] initWithData:rawData encoding:[self currentCharset]];
+      CIBarcodeDescriptor *descriptor = metadataObject.descriptor;
+      if (![descriptor isKindOfClass:CIQRCodeDescriptor.class]) {
+          [codes addObject:@""];
+          return;
+      }
+      CIQRCodeDescriptor *qrDescriptor = (CIQRCodeDescriptor *)descriptor;
+      NSData *rawData = [self decode:qrDescriptor];
+      NSString *code;
+      if (rawData) {
+          code = [[NSString alloc] initWithData:rawData encoding:[self currentCharset]];
+      } else {
+          code = metadataObject.stringValue;
+      }
       if (!code) {
           [codes addObject:@""];
           return;
@@ -209,6 +219,9 @@
     [overlayView setNeedsDisplay];
 }
 
+/**
+  * TODO まだ全てのQRコードで動かない
+ */
 - (NSData *)decode:(CIQRCodeDescriptor *)descriptor {
     NSUInteger len = descriptor.errorCorrectedPayload.length;
     Byte *sourceData = (Byte*)malloc(len);
