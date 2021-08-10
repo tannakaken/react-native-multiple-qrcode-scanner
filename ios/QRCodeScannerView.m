@@ -220,15 +220,15 @@
 }
 
 /**
-  * TODO まだ全てのQRコードで動かない
+  * TODO まだ全てのQRコードで動かない。混合モードでは動かない。
  */
 - (NSData *)decode:(CIQRCodeDescriptor *)descriptor {
     NSUInteger len = descriptor.errorCorrectedPayload.length;
     Byte *sourceData = (Byte*)malloc(len);
     memcpy(sourceData, descriptor.errorCorrectedPayload.bytes, len);
-    Byte byte = 0x04;
+    Byte byte = 0x04; // Kanjiモード。shift jisの漢字
     Byte mode = sourceData[0] >> 4;
-    if (mode != byte) {
+    if (mode != byte) { // 漢字モードのみ対応。その他はiosのデフォルトを使う。混合モードでは動かない。
         free(sourceData);
         return nil;
     }

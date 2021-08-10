@@ -14,8 +14,6 @@ export default function App() {
     <View style={styles.container}>
       <MultipleQRCodeScannerView
         onQRCodeTouch={(code) => {
-          const regex = new RegExp('^.{6}(,.*)?$', 's');
-          console.warn(regex.test(code));
           console.warn(code);
         }}
         colorMap={{
