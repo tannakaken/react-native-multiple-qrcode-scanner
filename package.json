@@ -36,13 +36,13 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/rakudo/react-native-multiple-qrcode-scanner",
-  "author": "Tanaka Kensaku <kensaku_tanaka@rakudo.io> (https://rakudo.io)",
+  "repository": "https://github.com/tannakaken/react-native-multiple-qrcode-scanner",
+  "author": "Tanaka Kensaku <tannakaken@gmail.com> (https://tannakaken.xyz)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rakudo/react-native-multiple-qrcode-scanner/issues"
+    "url": "https://github.com/tannakaken/react-native-multiple-qrcode-scanner/issues"
   },
-  "homepage": "https://github.com/rakudo/react-native-multiple-qrcode-scanner#readme",
+  "homepage": "https://github.com/tannakaken/react-native-multiple-qrcode-scanner#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
