@@ -34,7 +34,8 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "qrcode"
   ],
   "repository": "https://github.com/tannakaken/react-native-multiple-qrcode-scanner",
   "author": "Tanaka Kensaku <tannakaken@gmail.com> (https://tannakaken.xyz)",
