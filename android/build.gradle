@@ -3,6 +3,7 @@ buildscript {
   def kotlin_version = rootProject.ext.has('kotlinVersion') ? rootProject.ext.get('kotlinVersion') : project.properties['MultipleQrcodeScanner_kotlinVersion']
   ext.camerax_version = '1.0.0-rc03'
   repositories {
+    mavenCentral()
     google()
     jcenter()
   }
@@ -45,8 +46,8 @@ android {
     disable 'GradleCompatible'
   }
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_11
-    targetCompatibility JavaVersion.VERSION_11
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
   }
 }
 
