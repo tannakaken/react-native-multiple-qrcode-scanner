@@ -9,7 +9,6 @@ import android.view.View
 import androidx.annotation.ColorInt
 import com.facebook.react.bridge.ReadableMap
 import com.google.mlkit.vision.barcode.Barcode
-import com.reactnativemultipleqrcodescanner.ScanResult
 import java.nio.charset.Charset
 import java.time.LocalDateTime
 
@@ -39,6 +38,7 @@ class OverlayView : View {
     private val rectF = RectF(0f,0f,0f,0f)
     private var label = ""
     private var offsetX = 0F
+    private var offsetY = 0F
 
     private var areaRect = Rect(0, 0, width, height)
 
@@ -197,6 +197,7 @@ class OverlayView : View {
         return orientation == Configuration.ORIENTATION_PORTRAIT
     }
 
+    // TODO なぜscaleFactorYをかけるのかわからない
     private fun translateX(x: Float): Float = x * scaleFactorY
     private fun translateY(y: Float): Float = y * scaleFactorY
 
@@ -208,17 +209,21 @@ class OverlayView : View {
         val rectWidth = right - left
         val rectHeight = bottom - top
         val size = if (rectWidth > rectHeight) rectWidth else rectHeight
+        Log.d("offset", "(" + offsetX.toString() + "," + offsetY.toString() + ")")
+
+        // dignoではこれをしないとずれてしまう。理由はわからない。
+        offsetY = 1300f
         rectF.apply {
             this.left = left - offsetX
             this.right = left + size - offsetX
-            this.top = top
-            this.bottom = top + size
+            this.top = top - offsetY
+            this.bottom = top + size - offsetY
         }
     }
 
     fun update(scanResult: ScanResult) {
         // TODO react nativeからではorientationがわからない
-        // TODO 今回のアプリではとりあえずorientationは固定
+        // TODO 今回のアプリではとりあえずorientationはportrait固定
         if (isPortraitMode()) {
             scaleFactorY = height.toFloat() / scanResult.imageWidth
             scaleFactorX = width.toFloat() / scanResult.imageHeight
@@ -227,9 +232,16 @@ class OverlayView : View {
             scaleFactorX = width.toFloat() / scanResult.imageWidth
         }
         // TODO　どうしてこの計算で正しいoffsetが出るのかわからない！
+        // dignoだと
+        // heightは2179
+        // widthは1080
+        // scanResult.imageWidthは640
+        // scanResult.imageHeightは480
+        // なぜここでimageHeightとscaleFactorYで計算するとうまくいくのかわからない
         val scaledWidth = scanResult.imageHeight * scaleFactorY
-        val diff = scaledWidth - width
-        offsetX = diff / 2
+        val diffX = scaledWidth - width
+        offsetX = diffX / 2
+
         barcodes = scanResult.barcodes
         invalidate()
     }
